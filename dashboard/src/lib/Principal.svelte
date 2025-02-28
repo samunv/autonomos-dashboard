@@ -1,7 +1,14 @@
 <script></script>
 
 <section class="contenedor-principal">
-  <!--Contendor donde se imprimirán los datos, gráficas etc-->
+  <h1>Hola</h1>
 </section>
 
-<style></style>
+<style>
+  .contenedor-principal {
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    height: 70vh;
+  }
+</style>

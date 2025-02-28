@@ -1,6 +1,10 @@
 <script>
-  import Header from "./lib/Header.svelte";
+  import { Router, Route } from "svelte-routing";
+  import Inicio from "./lib/Inicio.svelte";
+  import Perfil from "./lib/Perfil.svelte";
 </script>
-
-<Header />
-<section class="seccion-cuerpo"></section>
+<Inicio />
+<Router>
+  <Route path="/" component={Inicio} />
+  <Route path="/perfil" component={Perfil} />
+</Router>
