@@ -5,9 +5,5 @@
 </script>
 
 <div>
-<Inicio />
-  <Router>
-    <Route path="/" component={Inicio} />
-    <Route path="/perfil" component={Perfil} />
-  </Router>
+  <Inicio />
 </div>

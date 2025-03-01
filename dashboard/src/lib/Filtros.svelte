@@ -1,9 +1,22 @@
 <script>
-  import { backIn } from "svelte/easing";
-  import { textoFiltro } from "../store";
+  import { textoFiltro, graficaFiltrada } from "../store";
 
   function actualizarTextoFiltro(texto) {
     textoFiltro.set(texto);
+  }
+
+  // Función para activar solo una clave y desactivar las demás
+  function activarGrafica(grafica) {
+    graficaFiltrada.update(() => {
+      let newState = {
+        GraficaTecMasUsadas: false,
+        GraficaTecMenosUsadas: false,
+        GraficaProyectosMasPresupuesto: false,
+        GraficaFacturasCyV: false,
+      };
+      newState[grafica] = true; // Solo una clave en true
+      return newState;
+    });
   }
 </script>
 
@@ -12,14 +25,20 @@
     <h3>Proyectos y Facturas</h3>
     <ul>
       <li
-        on:click={() => actualizarTextoFiltro("Proyectos con más presupuesto")}
+        on:click={() => {
+          actualizarTextoFiltro("Proyectos con más presupuesto"),
+            activarGrafica("GraficaProyectosMasPresupuesto");
+        }}
       >
         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
           <circle cx="50" cy="50" r="50" />
         </svg>Proyectos con más presupuesto
       </li>
       <li
-        on:click={() => actualizarTextoFiltro("Facturas de Compras y Ventas")}
+        on:click={() => {
+          actualizarTextoFiltro("Facturas de Compras y Ventas"),
+            activarGrafica("GraficaFacturasCyV");
+        }}
       >
         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
           <circle cx="50" cy="50" r="50" />
@@ -31,13 +50,21 @@
   <div class="filtros tecnologias">
     <h3>Tecnologías</h3>
     <ul>
-      <li on:click={() => actualizarTextoFiltro("Tecnologías más utilizadas")}>
+      <li
+        on:click={() => {
+          actualizarTextoFiltro("Tecnologías más utilizadas"),
+            activarGrafica("GraficaTecMasUsadas");
+        }}
+      >
         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
           <circle cx="50" cy="50" r="50" />
         </svg>Más Utilizadas
       </li>
       <li
-        on:click={() => actualizarTextoFiltro("Tecnologías menos utilizadas")}
+        on:click={() => {
+          actualizarTextoFiltro("Tecnologías menos utilizadas"),
+            activarGrafica("GraficaTecMenosUsadas");
+        }}
       >
         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
           <circle cx="50" cy="50" r="50" />
