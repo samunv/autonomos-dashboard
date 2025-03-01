@@ -4,6 +4,7 @@
   import Principal from "./Principal.svelte";
 
   import { textoFiltro } from "../store";
+  import { fade } from "svelte/transition";
 </script>
 
 <Header />
@@ -14,7 +15,7 @@
   </div>
 
   <div class="columna-dos">
-    <h1 class="titulos">{$textoFiltro}</h1>
+    <h1 class="titulos" transition:fade={{ duration: 1000 }}>{$textoFiltro}</h1>
     <Principal />
   </div>
 </section>
