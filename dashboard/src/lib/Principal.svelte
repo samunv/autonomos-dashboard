@@ -1,7 +1,9 @@
 <script>
   import { graficaFiltrada } from "../store";
+  import GraficaFacturasCyV from "./graficas/GraficaFacturasCyV.svelte";
   import GraficaTecMasUsadas from "./graficas/GraficaTecMasUsadas.svelte";
   import GraficaTecMenosUsadas from "./graficas/GraficaTecMenosUsadas.svelte";
+  import ProyectosConMasPresupuesto from "./graficas/ProyectosConMasPresupuesto.svelte";
 </script>
 
 <section class="contenedor-principal">
@@ -10,6 +12,10 @@
       <GraficaTecMasUsadas />
     {:else if $graficaFiltrada["GraficaTecMenosUsadas"]}
       <GraficaTecMenosUsadas />
+    {:else if $graficaFiltrada["GraficaProyectosMasPresupuesto"]}
+      <ProyectosConMasPresupuesto />
+    {:else if $graficaFiltrada["GraficaFacturasCyV"]}
+      <GraficaFacturasCyV />
     {:else}
       <div class="no-grafica-seleccionada">
         <p>
