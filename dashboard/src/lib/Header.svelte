@@ -4,7 +4,7 @@
       <img src="/img/Freelance-admin-logo.png" alt="" class="img-logo" />
     </a>
   </div>
-  <nav>
+  <!-- <nav>
     <ul>
       <li>
         <a href="" class="enlaces"
@@ -36,7 +36,7 @@
         </a>
       </li>
     </ul>
-  </nav>
+  </nav> -->
 </header>
 
 <style>
