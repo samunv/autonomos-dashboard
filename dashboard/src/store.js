@@ -8,5 +8,6 @@ export let textoFiltro = writable("‎");
     "GraficaTecMenosUsadas": false,
     "GraficaFacturasCyV": false,
     "GraficaProyectosPresupuesto" : false,
+    "GraficaClientesInversion" : false,
     "GraficaComparacion" : false
   });
