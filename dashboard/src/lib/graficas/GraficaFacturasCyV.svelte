@@ -36,7 +36,7 @@
     topFacturas = facturas
       .filter((factura) => factura.tipo === tipo)
       .sort((a, b) => b.total - a.total)
-      .slice(0, 4);
+      .slice(0, 7);
 
     console.log(`Top 4 facturas de tipo ${tipo}:`, topFacturas);
 
@@ -66,16 +66,23 @@
     }
 
     // Solo se crea una vez
+    // Cambiamos el tipo a "line"
     chartInstance = new Chart(canvas, {
-      type: "bar",
+      type: "line",
       data: {
         labels: labels,
         datasets: [
           {
             label: "Total de Factura",
             data: data,
-            backgroundColor: "#5e81f4",
-            borderWidth: 1,
+            borderColor: "#5e81f4",
+            backgroundColor: "rgba(94, 129, 244, 0.2)", // Relleno sutil debajo de la línea
+            borderWidth: 2,
+            tension: 0.4, // Hace que la línea tenga curvas suaves
+            fill: true, // Rellenar bajo la línea
+            pointBackgroundColor: "#1d4ed8",
+            pointBorderColor: "#1d4ed8",
+            pointRadius: 5, // Tamaño de los puntos
           },
         ],
       },
@@ -86,7 +93,19 @@
           easing: "easeOutQuart",
         },
         scales: {
-          y: { beginAtZero: true },
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: "Total (€)",
+            },
+          },
+          x: {
+            title: {
+              display: true,
+              text: "Facturas (Cliente- Número)",
+            },
+          },
         },
       },
     });
@@ -107,14 +126,36 @@
   <button
     class="botones"
     on:click={() => {
-      filtrarPorTipo("Compra"), textoFiltro.set("Facturas de Compras");
-    }}>Compras</button
+      filtrarPorTipo("Compra"),
+        textoFiltro.set("Facturas de Compras con Mayor Total");
+    }}
+    ><svg
+      xmlns="http://www.w3.org/2000/svg"
+      height="20px"
+      viewBox="0 -960 960 960"
+      width="20px"
+      fill="white"
+      ><path
+        d="M240-80q-33 0-56.5-23.5T160-160v-480q0-33 23.5-56.5T240-720h80q0-66 47-113t113-47q66 0 113 47t47 113h80q33 0 56.5 23.5T800-640v480q0 33-23.5 56.5T720-80H240Zm0-80h480v-480h-80v80q0 17-11.5 28.5T600-520q-17 0-28.5-11.5T560-560v-80H400v80q0 17-11.5 28.5T360-520q-17 0-28.5-11.5T320-560v-80h-80v480Zm160-560h160q0-33-23.5-56.5T480-800q-33 0-56.5 23.5T400-720ZM240-160v-480 480Z"
+      /></svg
+    > Compras</button
   >
   <button
     class="botones"
     on:click={() => {
-      filtrarPorTipo("Venta"), textoFiltro.set("Facturas de Ventas");
-    }}>Ventas</button
+      filtrarPorTipo("Venta"),
+        textoFiltro.set("Facturas de Ventas con Mayor Total");
+    }}
+    ><svg
+      xmlns="http://www.w3.org/2000/svg"
+      height="20px"
+      viewBox="0 -960 960 960"
+      width="20px"
+      fill="white"
+      ><path
+        d="M856-390 570-104q-12 12-27 18t-30 6q-15 0-30-6t-27-18L103-457q-11-11-17-25.5T80-513v-287q0-33 23.5-56.5T160-880h287q16 0 31 6.5t26 17.5l352 353q12 12 17.5 27t5.5 30q0 15-5.5 29.5T856-390ZM513-160l286-286-353-354H160v286l353 354ZM260-640q25 0 42.5-17.5T320-700q0-25-17.5-42.5T260-760q-25 0-42.5 17.5T200-700q0 25 17.5 42.5T260-640Zm220 160Z"
+      /></svg
+    > Ventas</button
   >
 </div>
 
@@ -140,6 +181,11 @@
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s ease;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    width: 100px;
   }
 
   .botones-filtros .botones:hover {
