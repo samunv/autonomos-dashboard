@@ -14,6 +14,7 @@
         GraficaProyectosMasPresupuesto: false,
         GraficaProyectosMenosPresupuesto: false,
         GraficaFacturasCyV: false,
+        GraficaComparacionIVAyIRPF: false,
       };
       newState[grafica] = true; // Solo una clave en true
       return newState;
@@ -96,12 +97,12 @@
       <li
         on:click={() => {
           actualizarTextoFiltro("Proveedores y clientes"),
-            activarGrafica("GraficaProvedoresyClientes");
+            activarGrafica("GraficaComparacionIVAyIRPF");
         }}
       >
         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
           <circle cx="50" cy="50" r="50" />
-        </svg>Proveedores y Clientes
+        </svg>Comparación IVA y IRPF
       </li>
 
 

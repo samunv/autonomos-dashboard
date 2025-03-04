@@ -9,7 +9,7 @@
   
     async function obtenerProyectosMenosPresupuesto() {
       try {
-        console.log("⏳ Cargando proyectos con menor presupuesto desde Firestore...");
+        console.log(" Cargando proyectos con menor presupuesto desde Firestore...");
   
         // Obtener los proyectos ordenados por presupuesto en orden ascendente (menor a mayor)
         const proyectosQuery = query(collection(db, "proyectos"), orderBy("presupuesto", "asc"), limit(4));
@@ -25,7 +25,7 @@
         await tick();
         renderChart();
       } catch (error) {
-        console.error("❌ Error al obtener proyectos de Firestore:", error);
+        console.error(" Error al obtener proyectos de Firestore:", error);
       }
     }
   
@@ -33,18 +33,18 @@
       let canvas = document.getElementById("chartCanvasMenos");
   
       if (!canvas) {
-        console.error("⚠ No se encontró el canvas en el DOM");
+        console.error(" No se encontró el canvas en el DOM");
         return;
       }
   
-      // 🔥 Destruir la instancia previa del gráfico si existe
+      // Destruir la instancia previa del gráfico si existe
       if (chartInstance) {
         chartInstance.destroy();
       }
   
       // Verificar si hay datos para graficar
       if (proyectosMenosPresupuesto.length === 0) {
-        console.warn("⚠ No hay datos suficientes para la gráfica");
+        console.warn(" No hay datos suficientes para la gráfica");
         return;
       }
   
@@ -57,7 +57,7 @@
             {
               label: "Presupuesto (€)",
               data: proyectosMenosPresupuesto.map((p) => p.presupuesto),
-              backgroundColor: ["#f4a261", "#2a9d8f", "#e76f51", "#264653"], // 🔥 Diferentes colores para cada barra
+              backgroundColor: ["#f4a261", "#2a9d8f", "#e76f51", "#264653"], // Diferentes colores para cada barra
               borderWidth: 1,
             },
           ],
