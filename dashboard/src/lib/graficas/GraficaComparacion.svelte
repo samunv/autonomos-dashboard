@@ -16,36 +16,44 @@
       let facturacionPorCliente = {};
       let facturacionPorProveedor = {};
 
-      // Recorrer todas las facturas
       facturasSnapshot.forEach((doc) => {
         let data = doc.data();
         let cliente = data.cliente || "Desconocido"; 
-        let proveedor = data.nombre || "Desconocido"; // 'nombre' representa la empresa que emite la factura
+        let proveedor = data.nombre || "Desconocido"; 
         let baseImponible = data.baseImponible || 0;
 
-        // Sumar base imponible por cliente
         if (!facturacionPorCliente[cliente]) {
           facturacionPorCliente[cliente] = 0;
         }
         facturacionPorCliente[cliente] += baseImponible;
 
-        // Sumar base imponible por proveedor
         if (!facturacionPorProveedor[proveedor]) {
           facturacionPorProveedor[proveedor] = 0;
         }
         facturacionPorProveedor[proveedor] += baseImponible;
       });
 
-      // Convertir los datos a un array para Chart.js
-      datosFacturacionClientes = Object.entries(facturacionPorCliente).map(([cliente, total]) => ({
+      // Convertir en array para análisis
+      let clientesArray = Object.entries(facturacionPorCliente).map(([cliente, total]) => ({
         cliente,
         total
       }));
-
-      datosFacturacionProveedores = Object.entries(facturacionPorProveedor).map(([proveedor, total]) => ({
+      let proveedoresArray = Object.entries(facturacionPorProveedor).map(([proveedor, total]) => ({
         proveedor,
         total
       }));
+
+      // Detectar valores extremos y excluirlos
+      const filtrarValoresAltos = (arr) => {
+        let totalSum = arr.reduce((acc, curr) => acc + curr.total, 0);
+        let promedio = totalSum / arr.length;
+        let limiteSuperior = promedio * 7; // Si un valor es 5 veces mayor al promedio, se excluye
+
+        return arr.filter(item => item.total <= limiteSuperior);
+      };
+
+      datosFacturacionClientes = filtrarValoresAltos(clientesArray).sort((a, b) => b.total - a.total);
+      datosFacturacionProveedores = filtrarValoresAltos(proveedoresArray).sort((a, b) => b.total - a.total);
 
       await tick();
       renderCharts();
@@ -90,9 +98,15 @@
       options: {
         responsive: true,
         scales: {
-          y: { beginAtZero: true },
-        },
-      },
+          y: {
+            ticks: {
+              callback: function(value) {
+                return value.toLocaleString() + " €";
+              }
+            }
+          }
+        }
+      }
     });
 
     chartProveedores = new Chart(canvasProveedores, {
@@ -110,23 +124,30 @@
       options: {
         responsive: true,
         scales: {
-          y: { beginAtZero: true },
-        },
-      },
+          y: {
+            ticks: {
+              callback: function(value) {
+                return value.toLocaleString() + " €";
+              }
+            }
+          }
+        }
+      }
     });
   }
 
   onMount(obtenerDatosFacturas);
 </script>
 
-<!-- Contenedor con dos gráficas en fila -->
+<!-- Contenedor de gráficas -->
 <div class="contenedor-graficas">
   <div class="grafica">
     <h3>Total Facturado por Cliente</h3>
     <canvas id="chartClientes"></canvas>
   </div>
   <div class="grafica">
-    <h3>Dinero Ganado por Empresas (Proveedores)</h3>
+    <h3> Ingresos Totales de Proveedores
+    </h3>
     <canvas id="chartProveedores"></canvas>
   </div>
 </div>

@@ -3,22 +3,23 @@
   import { onMount, tick } from "svelte";
   import { db } from "../../firebase";
   import { collection, getDocs } from "firebase/firestore";
-  import { fade, scale } from "svelte/transition";
 
   let chartInstance;
   let topTecnologias = [];
   let tecnologias = [];
+  let chartType = "pie";
 
   let tecnologiasConIcono = [];
 
   $: tecnologiasConIcono = topTecnologias
-    .map(({ nombre, cantidad }) => {
-      const tecnologia = tecnologias.find((t) => t.nombre === nombre);
-      return tecnologia
-        ? { nombre, cantidad, icono: tecnologia.icono }
-        : { nombre, cantidad, icono: "" };
-    })
-    .slice(0, 7);
+  .map(({ nombre, cantidad, porcentaje }) => {
+    const tecnologia = tecnologias.find((t) => t.nombre === nombre);
+    return tecnologia
+      ? { nombre, cantidad, porcentaje, icono: tecnologia.icono }
+      : { nombre, cantidad, porcentaje, icono: "" };
+  })
+  .slice(0, 7);
+
 
   async function obtenerTecnologias() {
     const tecnologiasSnapshot = await getDocs(collection(db, "tecnologias"));
@@ -41,14 +42,16 @@
         });
       });
 
+      let totalUsos = Object.values(tecnologiaCount).reduce((sum, value) => sum + value, 0);
+      
       topTecnologias = Object.entries(tecnologiaCount)
         .sort((a, b) => b[1] - a[1])
-        .map(([nombre, cantidad]) => ({ nombre, cantidad }));
+        .map(([nombre, cantidad]) => ({ nombre, cantidad, porcentaje: ((cantidad / totalUsos) * 100).toFixed(2) }));
 
       await tick();
       renderChart();
     } catch (error) {
-      console.error("Error al obtener datos de Firestore:", error);
+      console.error("❌ Error al obtener datos de Firestore:", error);
     }
   }
 
@@ -69,20 +72,16 @@
       return;
     }
 
-    const total = topTecnologias.reduce((sum, t) => sum + t.cantidad, 0);
-    const porcentajes = topTecnologias.map((t) =>
-      ((t.cantidad / total) * 100).toFixed(2)
-    );
-
     chartInstance = new Chart(canvas, {
-      type: "pie",
+      type: chartType,
       data: {
         labels: topTecnologias
-          .map((tec, posicion) => `${tec.nombre} (${porcentajes[posicion]}%)`)
+          .map((tec) => `${tec.nombre} (${tec.porcentaje}%)`)
           .slice(0, 4),
         datasets: [
           {
-            data: topTecnologias.map((t) => t.cantidad).slice(0, 4),
+            label: "Porcentaje de uso",
+            data: topTecnologias.map((t) => t.porcentaje).slice(0, 4),
             backgroundColor: ["#5e81f4", "#1d4ed8", "#60a5fa", "#0f172a"],
             borderWidth: 1,
           },
@@ -92,7 +91,11 @@
         responsive: true,
       },
     });
-    chartInstance.resize();
+  }
+
+  function toggleChartType() {
+    chartType = chartType === "pie" ? "bar" : "pie";
+    renderChart();
   }
 
   onMount(async () => {
@@ -104,15 +107,18 @@
 <div class="contenedor-conjunto">
   <div class="contenedor-top-tecnologias">
     <h1 class="titulo-top-tecnologias">Top 7 Tecnologías</h1>
-    {#each tecnologiasConIcono as { nombre, cantidad, icono }, index}
+    {#each tecnologiasConIcono as { nombre, cantidad, icono, porcentaje }, index}
       <div class="tecnologia-item">
         <p class="indice-posicion">{index + 1}</p>
         {#if icono}
           <img src={icono} alt="{nombre} icono" class="icono-tecnologia" />
         {/if}
-        <p class="nombre-tecnologia">{nombre}</p>
+        <p class="nombre-tecnologia">{nombre} - {porcentaje}% </p>
       </div>
     {/each}
+    <button class="toggle-button" on:click={toggleChartType}>
+      Cambiar a {chartType === "pie" ? "Barras" : "Circular"}
+    </button>
   </div>
   <div class="columna-responsive">
     <canvas id="chartCanvas"></canvas>
@@ -130,16 +136,14 @@
     margin-right: 5px;
     width: 20px;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    align-content: center;
   }
   .contenedor-conjunto {
     display: flex;
     align-items: stretch;
     justify-content: center;
-    gap: 30px; /* espacio entre columnas */
+    gap: 30px;
   }
 
   .columna-responsive {
@@ -154,8 +158,9 @@
     padding: 20px;
     background-color: #e8eeff;
     border-radius: 5px;
-    margin-right: 30px;
-    flex: 0 0 250px; /* Ancho fijo */
+    flex: 0 0 250px;
+    display: flex;
+    flex-direction: column;
   }
   .titulo-top-tecnologias {
     color: #5e81f4;
@@ -176,4 +181,18 @@
     gap: 5px;
   }
 
+  .toggle-button {
+    margin-top: 15px;
+    padding: 10px;
+    border: none;
+    background-color: #5e81f4;
+    color: white;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .toggle-button:hover {
+    background-color: #3b5998;
+  }
 </style>

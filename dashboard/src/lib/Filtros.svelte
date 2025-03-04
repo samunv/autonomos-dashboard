@@ -12,8 +12,8 @@
         GraficaTecMasUsadas: false,
         GraficaTecMenosUsadas: false,
         GraficaFacturasCyV: false,
-        GraficaComparacionIVAyIRPF: false,
         GraficaProyectosPresupuesto: false,
+        GraficaComparacion: false,
       };
       newState[grafica] = true; // Solo una clave en true
       return newState;
@@ -54,7 +54,7 @@
   </div>
 
   <div class="filtros tecnologias">
-    <h3>Tecnologías</h3>
+    <h3>Tecnologías en Proyectos</h3>
     <ul>
       <li
         on:click={() => {
@@ -81,17 +81,17 @@
 
 
   <div class="filtros provedor-cliente">
-    <h3>Consultas por proveedores y clientes.</h3>
+    <h3>Proveedores y Clientes.</h3>
     <ul>
       <li
         on:click={() => {
           actualizarTextoFiltro("Proveedores y clientes"),
-            activarGrafica("GraficaComparacionIVAyIRPF");
+            activarGrafica("GraficaComparacion");
         }}
       >
         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
           <circle cx="50" cy="50" r="50" />
-        </svg>Comparación IVA y IRPF
+        </svg>Comparación Facturado y Ingresos
       </li>
 
 
