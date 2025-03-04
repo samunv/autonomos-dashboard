@@ -6,7 +6,7 @@
 
     let chartInstance;
     let clientesData = [];
-    let chartType = "scatter"; // Inicialmente gráfico de dispersión
+    let chartType = "bar"; // Se inicializa con barras
     let estadoSeleccionado = "Todos";
     let presupuestoMin = 25000;
     let presupuestoMax = 100000;
@@ -23,9 +23,7 @@
                 let cliente = data.cliente;
                 let presupuesto = data.presupuesto;
                 let estado = data.estado;
-                let tecnologias = data.tecnologias || [];
 
-                // Aplicar filtros en código
                 if (
                     (estadoSeleccionado === "Todos" || estado === estadoSeleccionado) &&
                     presupuesto >= presupuestoMin &&
@@ -35,12 +33,10 @@
                         clientesInversion[cliente] = {
                             totalInvertido: 0,
                             proyectos: 0,
-                            tecnologias: new Set(),
                         };
                     }
                     clientesInversion[cliente].totalInvertido += presupuesto;
                     clientesInversion[cliente].proyectos += 1;
-                    tecnologias.forEach((tec) => clientesInversion[cliente].tecnologias.add(tec));
                 }
             });
 
@@ -48,7 +44,6 @@
                 cliente,
                 totalInvertido: data.totalInvertido,
                 proyectos: data.proyectos,
-                tecnologias: Array.from(data.tecnologias),
             }));
 
             await tick();
@@ -59,70 +54,84 @@
     }
 
     function renderChart() {
-        let canvas = document.getElementById("chartCanvas");
+    let canvas = document.getElementById("chartCanvas");
 
-        if (!canvas) {
-            console.error("⚠ No se encontró el canvas en el DOM");
-            return;
-        }
-
-        if (chartInstance) {
-            chartInstance.destroy();
-        }
-
-        if (clientesData.length === 0) {
-            console.warn("⚠ No hay datos suficientes para la gráfica");
-            return;
-        }
-
-        chartInstance = new Chart(canvas, {
-            type: chartType,
-            data: {
-                datasets: [
-                    {
-                        label: "Inversión por Cliente",
-                        data: clientesData.map((c) => ({
-                            x: c.proyectos,
-                            y: c.totalInvertido,
-                            r: Math.min(c.totalInvertido / 1500, 25), // Ajuste del tamaño relativo de la burbuja
-                        })),
-                        backgroundColor: "rgba(94, 129, 244, 0.7)",
-                    },
-                ],
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        title: { display: true, text: "Número de Proyectos" },
-                        ticks: {
-                            stepSize: 1,  // Asegura que se muestren solo enteros
-                            precision: 0,  // limina decimales
-                            suggestedMin: 0, // Inicia en 0
-                            suggestedMax: Math.max(...clientesData.map(c => c.proyectos), 5), // Se ajusta dinámicamente al máximo
-                        },
-                    },
-                    y: {
-                        title: { display: true, text: "Inversión Total (€)" },
-                    },
-                },
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: function (tooltipItem) {
-                                let cliente = clientesData[tooltipItem.dataIndex];
-                                return `${cliente.cliente}: €${cliente.totalInvertido} en ${cliente.proyectos} proyectos`;
-                            },
-                        },
-                    },
-                },
-            },
-        });
+    if (!canvas) {
+        console.error("⚠ No se encontró el canvas en el DOM");
+        return;
     }
 
+    if (chartInstance) {
+        chartInstance.destroy();
+    }
+
+    if (clientesData.length === 0) {
+        console.warn("⚠ No hay datos suficientes para la gráfica");
+        return;
+    }
+
+    let labels = clientesData.map(c => c.cliente);
+    let dataset;
+    
+    let options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: chartType === "bar" ? "Clientes" : "Número de Proyectos",
+                },
+                ticks: chartType === "bubble" ? { stepSize: 1, precision: 0 } : {}, // Asegura enteros en burbujas
+            },
+            y: {
+                title: { display: true, text: "Inversión Total (€)" },
+                beginAtZero: true,
+            },
+        },
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    label: function (tooltipItem) {
+                        let cliente = clientesData[tooltipItem.dataIndex];
+                        return `Cliente: ${cliente.cliente}, \nProyectos: ${cliente.proyectos}, \nInversión Total: €${cliente.totalInvertido.toFixed(2)}`;
+                    },
+                },
+            },
+        },
+    };
+
+    if (chartType === "bubble") {
+        dataset = {
+            label: "Inversión por Cliente",
+            data: clientesData.map(c => ({
+                x: c.proyectos,
+                y: c.totalInvertido,
+                r: Math.min(c.totalInvertido / 1500, 25), // Controla el tamaño de la burbuja
+            })),
+            backgroundColor: "rgba(94, 129, 244, 0.7)",
+        };
+    } else if (chartType === "bar") {
+        dataset = {
+            label: "Inversión por Cliente",
+            backgroundColor: "rgba(94, 129, 244, 0.8)",
+            data: clientesData.map(c => c.totalInvertido),
+        };
+    }
+
+    chartInstance = new Chart(canvas, {
+        type: chartType,
+        data: {
+            labels: chartType === "bar" ? labels : undefined,
+            datasets: [dataset],
+        },
+        options: options,
+    });
+}
+
+
     function cambiarTipoGrafico() {
-        chartType = chartType === "scatter" ? "bubble" : "scatter";
+        chartType = chartType === "bar" ? "bubble" : "bar";
         renderChart();
     }
 
@@ -146,7 +155,7 @@
 
 <!-- Contenedor principal -->
 <div class="contenedor-cliente-inversion">
-    <h2 class="titulo-seccion">Clientes y Sus Inversiones</h2>
+    <h2 class="titulo-seccion">Comparación de Inversión por Cliente</h2>
 
     <!-- Área de filtros -->
     <div class="filtros-clientes">
@@ -172,7 +181,7 @@
 
         <div class="boton-container">
             <button class="boton-toggle" on:click={cambiarTipoGrafico}>
-                Modo actual: <strong>{chartType === "scatter" ? "Dispersión" : "Burbuja"}</strong> | Cambiar
+                Modo: <strong>{chartType === "bar" ? "Barras" : "Burbujas"}</strong> | Cambiar
             </button>
         </div>
     </div>
@@ -223,30 +232,6 @@
         margin-bottom: 5px;
     }
 
-    .filtros-clientes select,
-    .filtros-clientes input {
-        padding: 8px;
-        border-radius: 5px;
-        border: 1px solid #5e81f4;
-        background-color: white;
-        font-size: 16px;
-        width: 100%;
-    }
-
-    .boton-container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-    }
-
-    .grafico-clientes {
-        width: 90%;
-        height: 400px;
-        display: flex;
-        justify-content: center;
-    }
-
     .boton-toggle {
         padding: 10px;
         border: none;
@@ -258,7 +243,10 @@
         margin-top: 10px;
     }
 
-    .boton-toggle:hover {
-        background-color: #3b5998;
+    .grafico-clientes {
+        width: 90%;
+        height: 400px;
+        display: flex;
+        justify-content: center;
     }
 </style>
