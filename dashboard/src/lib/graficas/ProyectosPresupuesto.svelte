@@ -124,14 +124,14 @@
 <div class="filtros-container">
     <div class="botones-filtros">
         <button class="boton" on:click={() => cambiarTipoPresupuesto("mas")}>
-            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="white">
+            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="white">
                 <path d="M480-160q-17 0-28.5-11.5T440-200v-560q0-17 11.5-28.5T480-800q17 0 28.5 11.5T520-760v560q0 17-11.5 28.5T480-160ZM280-360q-17 0-28.5-11.5T240-400v-160q0-17 11.5-28.5T280-600q17 0 28.5 11.5T320-560v160q0 17-11.5 28.5T280-360Zm400 0q-17 0-28.5-11.5T640-400v-160q0-17 11.5-28.5T680-600q17 0 28.5 11.5T720-560v160q0 17-11.5 28.5T680-360Z"/>
             </svg>
             Más presupuesto
         </button>
 
         <button class="boton" on:click={() => cambiarTipoPresupuesto("menos")}>
-            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="white">
+            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="white">
                 <path d="M280-360q-17 0-28.5-11.5T240-400v-160q0-17 11.5-28.5T280-600q17 0 28.5 11.5T320-560v160q0 17-11.5 28.5T280-360Z"/>
             </svg>
             Menos presupuesto
@@ -220,8 +220,8 @@
 
 
     .chart-container {
-        width: 100%;
-        height: 500px;
+        width: 90%;
+        height: 300px;
         display: flex;
         justify-content: center;
         align-items: center;

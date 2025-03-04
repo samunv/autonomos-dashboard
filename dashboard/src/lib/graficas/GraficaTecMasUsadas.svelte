@@ -12,14 +12,13 @@
   let tecnologiasConIcono = [];
 
   $: tecnologiasConIcono = topTecnologias
-  .map(({ nombre, cantidad, porcentaje }) => {
-    const tecnologia = tecnologias.find((t) => t.nombre === nombre);
-    return tecnologia
-      ? { nombre, cantidad, porcentaje, icono: tecnologia.icono }
-      : { nombre, cantidad, porcentaje, icono: "" };
-  })
-  .slice(0, 7);
-
+    .map(({ nombre, cantidad, porcentaje }) => {
+      const tecnologia = tecnologias.find((t) => t.nombre === nombre);
+      return tecnologia
+        ? { nombre, cantidad, porcentaje, icono: tecnologia.icono }
+        : { nombre, cantidad, porcentaje, icono: "" };
+    })
+    .slice(0, 7);
 
   async function obtenerTecnologias() {
     const tecnologiasSnapshot = await getDocs(collection(db, "tecnologias"));
@@ -42,16 +41,23 @@
         });
       });
 
-      let totalUsos = Object.values(tecnologiaCount).reduce((sum, value) => sum + value, 0);
-      
+      let totalUsos = Object.values(tecnologiaCount).reduce(
+        (sum, value) => sum + value,
+        0
+      );
+
       topTecnologias = Object.entries(tecnologiaCount)
         .sort((a, b) => b[1] - a[1])
-        .map(([nombre, cantidad]) => ({ nombre, cantidad, porcentaje: ((cantidad / totalUsos) * 100).toFixed(2) }));
+        .map(([nombre, cantidad]) => ({
+          nombre,
+          cantidad,
+          porcentaje: ((cantidad / totalUsos) * 100).toFixed(2),
+        }));
 
       await tick();
       renderChart();
     } catch (error) {
-      console.error("❌ Error al obtener datos de Firestore:", error);
+      console.error("Error al obtener datos de Firestore:", error);
     }
   }
 
@@ -113,7 +119,7 @@
         {#if icono}
           <img src={icono} alt="{nombre} icono" class="icono-tecnologia" />
         {/if}
-        <p class="nombre-tecnologia">{nombre} - {porcentaje}% </p>
+        <p class="nombre-tecnologia">{nombre} - {porcentaje}%</p>
       </div>
     {/each}
     <button class="toggle-button" on:click={toggleChartType}>
@@ -144,6 +150,7 @@
     align-items: stretch;
     justify-content: center;
     gap: 30px;
+    height: 100%;
   }
 
   .columna-responsive {
@@ -152,6 +159,8 @@
     justify-content: center;
     align-items: center;
     width: 500px;
+    max-width: 500px;
+    max-height: 500px;
   }
 
   .contenedor-top-tecnologias {
