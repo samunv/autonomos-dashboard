@@ -16,6 +16,8 @@
       <ProyectosConMasPresupuesto />
     {:else if $graficaFiltrada["GraficaFacturasCyV"]}
       <GraficaFacturasCyV />
+    {:else if $graficaFiltrada["GraficaProyectosMenosPresupuesto"]}
+      <ProyectosMenosPresupuesto />
     {:else}
       <div class="no-grafica-seleccionada">
         <p>

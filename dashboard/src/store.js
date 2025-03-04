@@ -7,5 +7,6 @@ export let textoFiltro = writable("‎");
     "GraficaTecMasUsadas": false,
     "GraficaTecMenosUsadas": false,
     "GraficaProyectosMasPresupuesto": false,
-    "GraficaFacturasCyV": false
+    "GraficaFacturasCyV": false,
+    "GraficaProyectosMenosPresupuesto" : false
   });
