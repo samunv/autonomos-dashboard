@@ -4,103 +4,160 @@
   import { db } from "../../firebase";
   import { collection, getDocs } from "firebase/firestore";
 
-  let chartInstance;
-  let topTecnologias = [];
+  let chartInstanceLess;
+  let lessTecnologias = [];
+  let tecnologias = [];
 
-  async function obtenerTopTecnologias() {
+  async function obtenerTecnologias() {
+    const tecnologiasSnapshot = await getDocs(collection(db, "tecnologias"));
+    tecnologias = tecnologiasSnapshot.docs.map((doc) => doc.data());
+    console.log("Tecnologías encontradas:", tecnologias);
+  }
+
+  async function obtenerDatosTecnologias() {
     try {
-      console.log(" Cargando datos desde Firestore...");
-
-      // Obtener todos los proyectos desde Firestore
+      console.log("Cargando datos desde Firestore...");
       const proyectosSnapshot = await getDocs(collection(db, "proyectos"));
       let tecnologiaCount = {};
 
-      // Recorrer los proyectos y contar cuántas veces aparece cada tecnología
       proyectosSnapshot.forEach((doc) => {
-        let tecnologias = doc.data().tecnologias || []; // Asegurar que siempre sea un array
+        let tecnologiasUsadas = doc.data().tecnologias;
 
-        tecnologias.forEach((tecnologia) => {
+        tecnologiasUsadas.forEach((tecnologia) => {
           tecnologiaCount[tecnologia] = (tecnologiaCount[tecnologia] || 0) + 1;
         });
       });
 
-      //  Obtener exactamente los mismos datos que en la gráfica de más utilizadas
-      let tecnologiasOrdenadas = Object.entries(tecnologiaCount).sort(
-        (a, b) => b[1] - a[1]
-      ); //  Primero ordenar de mayor a menor (igual que en la otra gráfica)
+      let tecnologiasOrdenadas = Object.entries(tecnologiaCount)
+        .map(([nombre, cantidad]) => ({ nombre, cantidad }))
+        .sort((a, b) => a.cantidad - b.cantidad);
 
-      //  Invertir los datos para mostrarlos de menor a mayor
-      topTecnologias = tecnologiasOrdenadas
-        .reverse() // Invierte el array
-        .slice(0, 4) //  Seleccionar las 4 menos utilizadas
-        .map(([nombre, cantidad]) => ({ nombre, cantidad }));
+      lessTecnologias = tecnologiasOrdenadas.slice(0, 5).map(({ nombre, cantidad }) => {
+        return { nombre, cantidad };
+      });
 
-      // Esperar a que el DOM esté listo antes de renderizar la gráfica
       await tick();
-      renderChart();
+      renderChartLess();
     } catch (error) {
-      console.error(" Error al obtener datos de Firestore:", error);
+      console.error("❌ Error al obtener datos de Firestore:", error);
     }
   }
 
-  function renderChart() {
-    let canvas = document.getElementById("chartCanvas");
-
+  function renderChartLess() {
+    let canvas = document.getElementById("chartCanvasLess");
     if (!canvas) {
-      console.error(" No se encontró el canvas en el DOM");
+      console.error("No se encontró el canvas en el DOM");
       return;
     }
 
-    //  Destruir la instancia previa del gráfico si existe
-    if (chartInstance) {
-      chartInstance.destroy();
+    if (chartInstanceLess) {
+      chartInstanceLess.destroy();
     }
 
-    // Verificar si hay datos para graficar
-    if (topTecnologias.length === 0) {
-      console.warn(" No hay datos suficientes para la gráfica");
+    if (lessTecnologias.length === 0) {
+      console.warn("No hay datos suficientes para la gráfica");
       return;
     }
 
-    // Crear la gráfica con los datos reales
-    // @ts-ignore
-    chartInstance = new Chart(canvas, {
-      type: "bar",
+    const total = lessTecnologias.reduce((sum, t) => sum + t.cantidad, 0);
+    const porcentajes = lessTecnologias.map((t) => ((t.cantidad / total) * 100).toFixed(2));
+
+    chartInstanceLess = new Chart(canvas, {
+      type: "pie",
       data: {
-        labels: topTecnologias.map((t) => t.nombre),
+        labels: lessTecnologias.map((tec, posicion) => `${tec.nombre} (${porcentajes[posicion]}%)`),
         datasets: [
           {
-            label: "Cantidad de Uso",
-            data: topTecnologias.map((t) => t.cantidad),
-            backgroundColor: ["#f47c7c"], //Color rojo claro para diferenciarlo
+            data: lessTecnologias.map((t) => t.cantidad),
+            backgroundColor: ["#ff8c00", "#ff4500", "#ff6347", "#b22222", "#d2691e"],
             borderWidth: 1,
           },
         ],
       },
       options: {
         responsive: true,
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: 2, // Fija el eje Y para que llegue hasta 2
-          },
-        },
       },
     });
   }
 
-  onMount(obtenerTopTecnologias);
+  onMount(async () => {
+    await obtenerTecnologias();
+    await obtenerDatosTecnologias();
+  });
 </script>
 
-<div class="columna-responsive">
-  <canvas id="chartCanvas"></canvas>
+<div class="contenedor-conjunto">
+  <div class="contenedor-peores-tecnologias">
+    <h1 class="titulo-peores-tecnologias">Peores 5 Tecnologías</h1>
+    {#each lessTecnologias as { nombre, cantidad }, index}
+      <div class="tecnologia-item">
+        <p class="indice-posicion">{index + 1}</p>
+        <p class="nombre-tecnologia">{nombre} - {cantidad} </p>
+      </div>
+    {/each}
+  </div>
+  <div class="contenedor-top-tecnologias">
+    <h1 class="titulo-top-tecnologias">Tecnologías Menos Usadas</h1>
+    <canvas id="chartCanvasLess"></canvas>
+  </div>
 </div>
 
 <style>
-  .columna-responsive {
-    width: 100%;
-    height: 400px;
+  .contenedor-conjunto {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    gap: 30px;
+  }
+
+  .contenedor-peores-tecnologias {
+    padding: 20px;
+    background-color: #e8eeff;
+    border-radius: 5px;
+    flex: 0 0 250px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .titulo-peores-tecnologias {
+    color: #5e81f4;
+    font-size: 25px;
+  }
+
+  .tecnologia-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 10px;
+    gap: 5px;
+  }
+
+  .indice-posicion {
+    color: white;
+    padding: 5px;
+    border-radius: 50%;
+    background-color: #ff4500;
+    font-weight: bold;
+    font-size: 18px;
+    margin-right: 5px;
+    width: 20px;
     display: flex;
     justify-content: center;
+    align-items: center;
+  }
+
+  .contenedor-top-tecnologias {
+    padding: 20px;
+    background-color: #e8eeff;
+    border-radius: 5px;
+    flex: 0 0 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .titulo-top-tecnologias {
+    color: #5e81f4;
+    font-size: 25px;
   }
 </style>

@@ -146,7 +146,8 @@
     <canvas id="chartClientes"></canvas>
   </div>
   <div class="grafica">
-    <h3>Dinero Ganado por Empresas (Proveedores)</h3>
+    <h3> Ingresos Totales de Proveedores
+    </h3>
     <canvas id="chartProveedores"></canvas>
   </div>
 </div>
