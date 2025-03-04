@@ -9,7 +9,7 @@
 
   async function obtenerTopTecnologias() {
     try {
-      console.log("⏳ Cargando datos desde Firestore...");
+      console.log(" Cargando datos desde Firestore...");
 
       // Obtener todos los proyectos
       const proyectosSnapshot = await getDocs(collection(db, "proyectos"));
@@ -43,18 +43,18 @@
     let canvas = document.getElementById("chartCanvas");
 
     if (!canvas) {
-      console.error("⚠ No se encontró el canvas en el DOM");
+      console.error(" No se encontró el canvas en el DOM");
       return;
     }
 
-    // 🔥 Destruir la instancia previa del gráfico si existe
+    //  Destruir la instancia previa del gráfico si existe
     if (chartInstance) {
       chartInstance.destroy();
     }
 
     // Verificar si hay datos para graficar
     if (topTecnologias.length === 0) {
-      console.warn("⚠ No hay datos suficientes para la gráfica");
+      console.warn(" No hay datos suficientes para la gráfica");
       return;
     }
 
