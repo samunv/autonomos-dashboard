@@ -53,7 +53,7 @@
       <ul>
       <li
         on:click={() => {
-          actualizarTextoFiltro("Facturas con más total"),
+          actualizarTextoFiltro("Facturas de Ventas"),
             activarGrafica("GraficaFacturasCyV");
         }}
       >
