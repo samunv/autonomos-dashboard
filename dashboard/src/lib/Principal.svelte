@@ -6,6 +6,7 @@
   import GraficaTecMenosUsadas from "./graficas/GraficaTecMenosUsadas.svelte";
   import ProyectosConMasPresupuesto from "./graficas/ProyectosConMasPresupuesto.svelte";
   import ProyectosMenosPresupuesto from "./graficas/ProyectosMenosPresupuesto.svelte";
+  import ProyectosPresupuesto from "./graficas/ProyectosPresupuesto.svelte";
 </script>
 
 <section class="contenedor-principal">
@@ -22,6 +23,8 @@
       <ProyectosMenosPresupuesto />
     {:else if $graficaFiltrada["GraficaComparacionIVAyIRPF"]}
       <GraficaComparacionIvAyIrpf />
+    {:else if $graficaFiltrada["GraficaProyectosPresupuesto"]}
+      <ProyectosPresupuesto />
     {:else}
       <div class="no-grafica-seleccionada">
         <p>
