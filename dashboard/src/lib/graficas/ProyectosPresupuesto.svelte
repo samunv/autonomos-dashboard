@@ -159,7 +159,7 @@
         justify-content: center;
         align-items: center;
         gap: 15px;
-        margin-bottom: 20px;
+        margin-bottom: 40px;
     }
 
     .botones-filtros {
