@@ -12,6 +12,7 @@
         GraficaTecMasUsadas: false,
         GraficaTecMenosUsadas: false,
         GraficaProyectosMasPresupuesto: false,
+        GraficaProyectosMenosPresupuesto: false,
         GraficaFacturasCyV: false,
       };
       newState[grafica] = true; // Solo una clave en true
