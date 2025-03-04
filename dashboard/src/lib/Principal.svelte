@@ -4,8 +4,7 @@
   import GraficaFacturasCyV from "./graficas/GraficaFacturasCyV.svelte";
   import GraficaTecMasUsadas from "./graficas/GraficaTecMasUsadas.svelte";
   import GraficaTecMenosUsadas from "./graficas/GraficaTecMenosUsadas.svelte";
-  import ProyectosConMasPresupuesto from "./graficas/ProyectosConMasPresupuesto.svelte";
-  import ProyectosMenosPresupuesto from "./graficas/ProyectosMenosPresupuesto.svelte";
+
   import ProyectosPresupuesto from "./graficas/ProyectosPresupuesto.svelte";
 </script>
 
@@ -15,12 +14,8 @@
       <GraficaTecMasUsadas />
     {:else if $graficaFiltrada["GraficaTecMenosUsadas"]}
       <GraficaTecMenosUsadas />
-    {:else if $graficaFiltrada["GraficaProyectosMasPresupuesto"]}
-      <ProyectosConMasPresupuesto />
     {:else if $graficaFiltrada["GraficaFacturasCyV"]}
       <GraficaFacturasCyV />
-    {:else if $graficaFiltrada["GraficaProyectosMenosPresupuesto"]}
-      <ProyectosMenosPresupuesto />
     {:else if $graficaFiltrada["GraficaComparacionIVAyIRPF"]}
       <GraficaComparacionIvAyIrpf />
     {:else if $graficaFiltrada["GraficaProyectosPresupuesto"]}

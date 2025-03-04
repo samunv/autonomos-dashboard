@@ -6,9 +6,7 @@ export let textoFiltro = writable("‎");
   export const graficaFiltrada = writable({
     "GraficaTecMasUsadas": false,
     "GraficaTecMenosUsadas": false,
-    "GraficaProyectosMasPresupuesto": false,
     "GraficaFacturasCyV": false,
-    "GraficaProyectosMenosPresupuesto" : false,
     "GraficaComparacionIVAyIRPF" : false,
     "GraficaProyectosPresupuesto" : false,
   });
