@@ -1,6 +1,6 @@
 <script>
   import Chart from "chart.js/auto";
-  import { onMount, tick } from "svelte";
+  import { onDestroy, onMount, tick } from "svelte";
   import { db } from "../../firebase";
   import { collection, getDocs } from "firebase/firestore";
   import { textoFiltro } from "../../store";
@@ -52,23 +52,28 @@
       return;
     }
 
-    if (chartInstance) {
-      chartInstance.destroy();
-    }
+    const labels = topFacturas.map(
+      (f) => f.nombre + " - " + f.numeroFactura || "Sin nombre"
+    );
+    const data = topFacturas.map((f) => f.total);
 
-    if (topFacturas.length === 0) {
-      console.warn("No hay datos suficientes para la gráfica");
+    if (chartInstance) {
+      // Si ya existe, actualizamos los datos sin destruir el gráfico
+      chartInstance.data.labels = labels;
+      chartInstance.data.datasets[0].data = data;
+      chartInstance.update();
       return;
     }
 
+    // Solo se crea una vez
     chartInstance = new Chart(canvas, {
       type: "bar",
       data: {
-        labels: topFacturas.map((f) => f.nombre + " - " + f.numeroFactura  || "Sin nombre"),
+        labels: labels,
         datasets: [
           {
             label: "Total de Factura",
-            data: topFacturas.map((f) => f.total),
+            data: data,
             backgroundColor: "#5e81f4",
             borderWidth: 1,
           },
@@ -76,6 +81,10 @@
       },
       options: {
         responsive: true,
+        animation: {
+          duration: 1000,
+          easing: "easeOutQuart",
+        },
         scales: {
           y: { beginAtZero: true },
         },
@@ -83,10 +92,18 @@
     });
   }
 
+  onDestroy(() => {
+    if (chartInstance) {
+      chartInstance.destroy();
+      chartInstance = null;
+      console.log("Gráfico destruido correctamente.");
+    }
+  });
+
   onMount(obtenerFacturas);
 </script>
 
-<div class="filtros">
+<div class="botones-filtros">
   <button
     class="botones"
     on:click={() => {
@@ -102,3 +119,23 @@
 </div>
 
 <canvas id="chartCanvas"></canvas>
+
+<style>
+  .botones-filtros {
+    display: flex;
+    width: 90%;
+    justify-content: right;
+  }
+
+  .botones-filtros .botones {
+    background-color: #5e81f4;
+    color: white;
+    border: none;
+    margin-right: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+</style>

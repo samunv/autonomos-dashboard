@@ -1,12 +1,11 @@
 <script>
   import { graficaFiltrada } from "../store";
-    import GraficaComparacionIvAyIrpf from "./graficas/GraficaComparacionIVAyIRPF.svelte";
+  import GraficaComparacionIvAyIrpf from "./graficas/GraficaComparacionIVAyIRPF.svelte";
   import GraficaFacturasCyV from "./graficas/GraficaFacturasCyV.svelte";
   import GraficaTecMasUsadas from "./graficas/GraficaTecMasUsadas.svelte";
   import GraficaTecMenosUsadas from "./graficas/GraficaTecMenosUsadas.svelte";
   import ProyectosConMasPresupuesto from "./graficas/ProyectosConMasPresupuesto.svelte";
-    import ProyectosMenosPresupuesto from "./graficas/ProyectosMenosPresupuesto.svelte";
-    
+  import ProyectosMenosPresupuesto from "./graficas/ProyectosMenosPresupuesto.svelte";
 </script>
 
 <section class="contenedor-principal">
@@ -22,7 +21,7 @@
     {:else if $graficaFiltrada["GraficaProyectosMenosPresupuesto"]}
       <ProyectosMenosPresupuesto />
     {:else if $graficaFiltrada["GraficaComparacionIVAyIRPF"]}
-      <GraficaComparacionIvAyIrpf/>
+      <GraficaComparacionIvAyIrpf />
     {:else}
       <div class="no-grafica-seleccionada">
         <p>
@@ -56,10 +55,11 @@
   }
 
   .contenedor-grafica {
-    height: 90%;
-
+    height: 95%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
   }
 
   .no-grafica-seleccionada {
