@@ -25,11 +25,13 @@
       });
 
       //  Obtener exactamente los mismos datos que en la gráfica de más utilizadas
-      let tecnologiasOrdenadas = Object.entries(tecnologiaCount)
-        .sort((a, b) => b[1] - a[1]); //  Primero ordenar de mayor a menor (igual que en la otra gráfica)
+      let tecnologiasOrdenadas = Object.entries(tecnologiaCount).sort(
+        (a, b) => b[1] - a[1]
+      ); //  Primero ordenar de mayor a menor (igual que en la otra gráfica)
 
       //  Invertir los datos para mostrarlos de menor a mayor
-      topTecnologias = tecnologiasOrdenadas.reverse() // Invierte el array
+      topTecnologias = tecnologiasOrdenadas
+        .reverse() // Invierte el array
         .slice(0, 4) //  Seleccionar las 4 menos utilizadas
         .map(([nombre, cantidad]) => ({ nombre, cantidad }));
 
@@ -78,9 +80,9 @@
       options: {
         responsive: true,
         scales: {
-          y: { 
+          y: {
             beginAtZero: true,
-            max: 2 // Fija el eje Y para que llegue hasta 2
+            max: 2, // Fija el eje Y para que llegue hasta 2
           },
         },
       },
@@ -90,4 +92,15 @@
   onMount(obtenerTopTecnologias);
 </script>
 
-<canvas id="chartCanvas"></canvas>
+<div class="columna-responsive">
+  <canvas id="chartCanvas"></canvas>
+</div>
+
+<style>
+  .columna-responsive {
+    width: 100%;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+  }
+</style>

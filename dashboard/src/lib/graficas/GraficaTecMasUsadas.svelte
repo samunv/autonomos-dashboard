@@ -9,29 +9,24 @@
 
   async function obtenerTopTecnologias() {
     try {
-      console.log(" Cargando datos desde Firestore...");
+      console.log("Cargando datos desde Firestore...");
 
-      // Obtener todos los proyectos
       const proyectosSnapshot = await getDocs(collection(db, "proyectos"));
       let tecnologiaCount = {};
 
-      // Contar la cantidad de veces que aparece cada tecnología
       proyectosSnapshot.forEach((doc) => {
-        let tecnologias = doc.data().tecnologias; // Obtener array de tecnologías
+        let tecnologias = doc.data().tecnologias;
 
         tecnologias.forEach((tecnologia) => {
           tecnologiaCount[tecnologia] = (tecnologiaCount[tecnologia] || 0) + 1;
         });
       });
 
-      // Ordenar por frecuencia y obtener las 4 más utilizadas
       topTecnologias = Object.entries(tecnologiaCount)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 4)
         .map(([nombre, cantidad]) => ({ nombre, cantidad }));
 
-
-      // Esperar a que el DOM esté listo antes de renderizar la gráfica
       await tick();
       renderChart();
     } catch (error) {
@@ -43,40 +38,42 @@
     let canvas = document.getElementById("chartCanvas");
 
     if (!canvas) {
-      console.error(" No se encontró el canvas en el DOM");
+      console.error("No se encontró el canvas en el DOM");
       return;
     }
 
-    //  Destruir la instancia previa del gráfico si existe
     if (chartInstance) {
       chartInstance.destroy();
     }
 
-    // Verificar si hay datos para graficar
     if (topTecnologias.length === 0) {
-      console.warn(" No hay datos suficientes para la gráfica");
+      console.warn("No hay datos suficientes para la gráfica");
       return;
     }
 
-    // Crear la gráfica con los datos reales
+    const total = topTecnologias.reduce((sum, t) => sum + t.cantidad, 0);
+    const porcentajes = topTecnologias.map((t) =>
+      ((t.cantidad / total) * 100).toFixed(2)
+    );
+
     chartInstance = new Chart(canvas, {
-      type: "bar",
+      type: "pie",
       data: {
-        labels: topTecnologias.map((t) => t.nombre),
+        labels: topTecnologias.map(
+          (tec, posicion) => `${tec.nombre} (${porcentajes[posicion]}%)`
+        ),
         datasets: [
           {
-            label: "Cantidad de Uso",
             data: topTecnologias.map((t) => t.cantidad),
-            backgroundColor: ["#5e81f4"],
+            backgroundColor: ["#5e81f4", "#1d4ed8", "#60a5fa", "#0f172a"]
+
+            ,
             borderWidth: 1,
           },
         ],
       },
       options: {
         responsive: true,
-        scales: {
-          y: { beginAtZero: true },
-        },
       },
     });
   }
@@ -84,4 +81,15 @@
   onMount(obtenerTopTecnologias);
 </script>
 
-<canvas id="chartCanvas"></canvas>
+<div class="columna-responsive">
+  <canvas id="chartCanvas"></canvas>
+</div>
+
+<style>
+  .columna-responsive {
+    width: 100%;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+  }
+</style>

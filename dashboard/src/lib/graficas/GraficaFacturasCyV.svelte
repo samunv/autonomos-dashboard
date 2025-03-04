@@ -139,6 +139,11 @@
     border-radius: 5px;
     font-weight: bold;
     cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .botones-filtros .botones:hover {
+    background-color: #3a60db;
   }
 
   .columna-responsive {
