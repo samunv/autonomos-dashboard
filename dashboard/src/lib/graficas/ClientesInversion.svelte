@@ -8,7 +8,7 @@
     let clientesData = [];
     let chartType = "bar"; // Se inicializa con barras
     let estadoSeleccionado = "Todos";
-    let presupuestoMin = 25000;
+    let presupuestoMin = 0;
     let presupuestoMax = 100000;
 
     async function obtenerDatosClientes() {
