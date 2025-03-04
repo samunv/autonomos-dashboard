@@ -53,13 +53,13 @@
       <ul>
       <li
         on:click={() => {
-          actualizarTextoFiltro("Facturas de Compras"),
+          actualizarTextoFiltro("Facturas con más total"),
             activarGrafica("GraficaFacturasCyV");
         }}
       >
         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
           <circle cx="50" cy="50" r="50" />
-        </svg>Facturas de compras y ventas
+        </svg>Facturas con más total
       </li>
   </ul>
   </div>
