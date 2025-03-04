@@ -71,7 +71,7 @@
   
       // Crear la gráfica con los datos filtrados
       chartInstance = new Chart(canvas, {
-        type: "bar",
+        type: "bar", // 🔄 CAMBIAMOS EL TIPO A HORIZONTAL BAR
         data: {
           labels: proyectosFiltrados.map((p) => p.nombre),
           datasets: [
@@ -85,10 +85,11 @@
         },
         options: {
           responsive: true,
+          indexAxis: 'y', // 🔄 **ESTE CAMBIO HACE QUE EL GRÁFICO SEA HORIZONTAL**
           scales: {
-            y: { 
+            x: { 
               beginAtZero: true,
-              suggestedMax: Math.max(...proyectosFiltrados.map((p) => p.presupuesto), 0) + 5000 // Ajuste dinámico del eje Y
+              suggestedMax: Math.max(...proyectosFiltrados.map((p) => p.presupuesto), 0) + 5000 // Ajuste dinámico del eje X
             },
           },
         },
