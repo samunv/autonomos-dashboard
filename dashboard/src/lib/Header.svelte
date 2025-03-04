@@ -1,7 +1,12 @@
 <header>
   <div class="logo">
-    <a href="/">
-      <img src="/img/Freelance-admin-logo.png" alt="" class="img-logo" />
+    <a href="/" class="enlace-logo">
+      <img
+        src="/img/icono-freelancer-admin-removebg-preview.png"
+        alt=""
+        class="img-logo"
+      />
+      <h2>DashBoard</h2>
     </a>
   </div>
   <!-- <nav>
@@ -40,6 +45,16 @@
 </header>
 
 <style>
+  .enlace-logo {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-decoration: none;
+  }
+  .enlace-logo h2 {
+    color: #5e81f4;
+  }
+
   .seccion-salida-router {
     margin-top: 30px;
     margin-bottom: 30px;
@@ -57,7 +72,7 @@
 
   .img-logo {
     height: 50px;
-    width: 170px;
+    width: 50px;
   }
 
   nav ul {

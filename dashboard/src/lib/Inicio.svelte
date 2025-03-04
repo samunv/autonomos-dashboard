@@ -36,7 +36,7 @@
   }
 
   .columna-uno {
-    width: 30vw;
+    width: 40vw;
   }
   .columna-dos {
     width: 100vw;
