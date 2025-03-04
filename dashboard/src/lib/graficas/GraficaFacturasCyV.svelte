@@ -118,13 +118,16 @@
   >
 </div>
 
-<canvas id="chartCanvas"></canvas>
+<div class="columna-responsive">
+  <canvas id="chartCanvas"></canvas>
+</div>
 
 <style>
   .botones-filtros {
     display: flex;
     width: 90%;
-    justify-content: right;
+    justify-content: center;
+    margin-bottom: 20px;
   }
 
   .botones-filtros .botones {
@@ -138,4 +141,10 @@
     cursor: pointer;
   }
 
+  .columna-responsive {
+    width: 100%;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+  }
 </style>

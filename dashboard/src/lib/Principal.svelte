@@ -55,7 +55,6 @@
   }
 
   .contenedor-grafica {
-    height: 95%;
     display: flex;
     flex-direction: column;
     justify-content: center;
