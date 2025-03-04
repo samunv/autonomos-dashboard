@@ -7,6 +7,7 @@
   let chartInstanceLess;
   let lessTecnologias = [];
   let tecnologias = [];
+  let chartType = "pie";
 
   async function obtenerTecnologias() {
     const tecnologiasSnapshot = await getDocs(collection(db, "tecnologias"));
@@ -28,12 +29,15 @@
         });
       });
 
-      let tecnologiasOrdenadas = Object.entries(tecnologiaCount)
-        .map(([nombre, cantidad]) => ({ nombre, cantidad }))
-        .sort((a, b) => a.cantidad - b.cantidad);
+      let totalUsos = Object.values(tecnologiaCount).reduce((sum, value) => sum + value, 0);
 
-      lessTecnologias = tecnologiasOrdenadas.slice(0, 5).map(({ nombre, cantidad }) => {
-        return { nombre, cantidad };
+      let tecnologiasOrdenadas = Object.entries(tecnologiaCount)
+        .map(([nombre, cantidad]) => ({ nombre, cantidad, porcentaje: ((cantidad / totalUsos) * 100).toFixed(2) }))
+        .sort((a, b) => a.porcentaje - b.porcentaje);
+
+      lessTecnologias = tecnologiasOrdenadas.slice(0, 5).map(({ nombre, cantidad, porcentaje }) => {
+        const tecnologia = tecnologias.find((t) => t.nombre === nombre);
+        return { nombre, cantidad, porcentaje, icono: tecnologia ? tecnologia.icono : "" };
       });
 
       await tick();
@@ -59,17 +63,15 @@
       return;
     }
 
-    const total = lessTecnologias.reduce((sum, t) => sum + t.cantidad, 0);
-    const porcentajes = lessTecnologias.map((t) => ((t.cantidad / total) * 100).toFixed(2));
-
     chartInstanceLess = new Chart(canvas, {
-      type: "pie",
+      type: chartType,
       data: {
-        labels: lessTecnologias.map((tec, posicion) => `${tec.nombre} (${porcentajes[posicion]}%)`),
+        labels: lessTecnologias.map((tec) => `${tec.nombre} (${tec.porcentaje}%)`),
         datasets: [
           {
-            data: lessTecnologias.map((t) => t.cantidad),
-            backgroundColor: ["#ff8c00", "#ff4500", "#ff6347", "#b22222", "#d2691e"],
+            label: "Porcentaje de uso",
+            data: lessTecnologias.map((t) => t.porcentaje),
+            backgroundColor: ["#5e81f4", "#3b5998", "#1e3a8a", "#60a5fa", "#93c5fd"],
             borderWidth: 1,
           },
         ],
@@ -80,6 +82,11 @@
     });
   }
 
+  function toggleChartType() {
+    chartType = chartType === "pie" ? "bar" : "pie";
+    renderChartLess();
+  }
+
   onMount(async () => {
     await obtenerTecnologias();
     await obtenerDatosTecnologias();
@@ -88,13 +95,20 @@
 
 <div class="contenedor-conjunto">
   <div class="contenedor-peores-tecnologias">
-    <h1 class="titulo-peores-tecnologias">Peores 5 Tecnologías</h1>
-    {#each lessTecnologias as { nombre, cantidad }, index}
+    <h1 class="titulo-peores-tecnologias"> 5 Tecnologías Menos Usadas
+    </h1>
+    {#each lessTecnologias as { nombre, cantidad, porcentaje, icono }, index}
       <div class="tecnologia-item">
         <p class="indice-posicion">{index + 1}</p>
-        <p class="nombre-tecnologia">{nombre} - {cantidad} </p>
+        {#if icono}
+          <img src={icono} alt="{nombre} icono" class="icono-tecnologia" />
+        {/if}
+        <p class="nombre-tecnologia">{nombre} - {porcentaje}% </p>
       </div>
     {/each}
+    <button class="toggle-button" on:click={toggleChartType}>
+      Cambiar a {chartType === "pie" ? "Barras" : "Circular"}
+    </button>
   </div>
   <div class="contenedor-top-tecnologias">
     <h1 class="titulo-top-tecnologias">Tecnologías Menos Usadas</h1>
@@ -136,7 +150,7 @@
     color: white;
     padding: 5px;
     border-radius: 50%;
-    background-color: #ff4500;
+    background-color: #5e81f4;;
     font-weight: bold;
     font-size: 18px;
     margin-right: 5px;
@@ -144,6 +158,27 @@
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  .icono-tecnologia {
+    object-fit: contain;
+    width: 25px;
+    height: 25px;
+  }
+
+  .toggle-button {
+    margin-top: 15px;
+    padding: 10px;
+    border: none;
+    background-color: #5e81f4;
+    color: white;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .toggle-button:hover {
+    background-color: #3b5998;
   }
 
   .contenedor-top-tecnologias {
