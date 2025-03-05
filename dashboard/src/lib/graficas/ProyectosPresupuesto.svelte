@@ -10,11 +10,11 @@
     let proyectosFiltrados = [];
     let estadoSeleccionado = "Finalizado";
     let titulo = "Proyectos con más presupuesto"; // Inicialmente "Más presupuesto"
-    let tipoPresupuesto = "mas"; // 🔼 "mas" = Mayor presupuesto, 🔽 "menos" = Menor presupuesto
+    let tipoPresupuesto = "mas"; // "mas" = Mayor presupuesto, "menos" = Menor presupuesto
 
     async function obtenerProyectosPresupuesto() {
         try {
-            console.log(`⏳ Cargando TODOS los proyectos desde Firestore...`);
+            console.log(` Cargando TODOS los proyectos desde Firestore...`);
 
             const proyectosSnapshot = await getDocs(collection(db, "proyectos"));
 
@@ -37,7 +37,7 @@
             await tick();
             renderChart();
         } catch (error) {
-            console.error("❌ Error al obtener proyectos de Firestore:", error);
+            console.error("Error al obtener proyectos de Firestore:", error);
         }
     }
 
@@ -45,7 +45,7 @@
         let canvas = document.getElementById("chartCanvas");
 
         if (!canvas) {
-            console.error("⚠ No se encontró el canvas en el DOM");
+            console.error("No se encontró el canvas en el DOM");
             return;
         }
 
@@ -54,7 +54,7 @@
         }
 
         if (proyectosFiltrados.length === 0) {
-            console.warn("⚠ No hay datos suficientes para la gráfica");
+            console.warn(" No hay datos suficientes para la gráfica");
             return;
         }
 

@@ -13,7 +13,7 @@
 
     async function obtenerDatosClientes() {
         try {
-            console.log("⏳ Cargando datos de clientes desde Firestore...");
+            console.log("Cargando datos de clientes desde Firestore...");
 
             const proyectosSnapshot = await getDocs(collection(db, "proyectos"));
             let clientesInversion = {};
@@ -49,7 +49,7 @@
             await tick();
             renderChart();
         } catch (error) {
-            console.error("❌ Error al obtener datos de clientes:", error);
+            console.error("Error al obtener datos de clientes:", error);
         }
     }
 
@@ -57,7 +57,7 @@
     let canvas = document.getElementById("chartCanvas");
 
     if (!canvas) {
-        console.error("⚠ No se encontró el canvas en el DOM");
+        console.error("No se encontró el canvas en el DOM");
         return;
     }
 
@@ -66,7 +66,7 @@
     }
 
     if (clientesData.length === 0) {
-        console.warn("⚠ No hay datos suficientes para la gráfica");
+        console.warn("No hay datos suficientes para la gráfica");
         return;
     }
 
@@ -155,8 +155,6 @@
 
 <!-- Contenedor principal -->
 <div class="contenedor-cliente-inversion">
-    <h2 class="titulo-seccion">Comparación de Inversión por Cliente</h2>
-
     <!-- Área de filtros -->
     <div class="filtros-clientes">
         <div class="filtro">
