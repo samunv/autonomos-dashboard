@@ -211,7 +211,6 @@
         flex-wrap: wrap;
         gap: 15px;
         justify-content: center;
-        background: #e8eeff;
         padding: 15px;
         border-radius: 5px;
         width: 90%;
@@ -222,7 +221,7 @@
         display: flex;
         flex-direction: column;
         align-items: start;
-        min-width: 180px;
+        min-width: 160px;
     }
 
     .filtros-clientes label {
@@ -238,7 +237,7 @@
         font-size: 16px;
         border-radius: 5px;
         cursor: pointer;
-        margin-top: 10px;
+        margin-top: 23px;
     }
 
     .grafico-clientes {
@@ -246,5 +245,15 @@
         height: 400px;
         display: flex;
         justify-content: center;
+    }
+    #estado{
+        border-radius: 5px;
+        border: 1px solid  #5e81f4; 
+        padding: 10px ;
+    }
+    #presupuesto-min,#presupuesto-max{
+        border-radius: 5px;
+        border:1px solid  #5e81f4;
+        padding: 10px;
     }
 </style>
